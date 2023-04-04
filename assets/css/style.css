@@ -1,0 +1,6 @@
+.form > button {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px;
+    outline: none;
+}

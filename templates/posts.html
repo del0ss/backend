@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+{{ template "head.html" .}}
+<body>
+{{ template "navbar.html" .}}
+
+<h1>Посты</h1>
+
+{{ if .Posts }}
+    {{ range .Posts }}
+    <div>
+        <h1>{{ .Title }}</h1>
+        <p>{{ .Content }}</p>
+    </div>
+    {{ end }}
+{{ else }}
+    <h1>Пусто</h1>
+{{ end }}
+
+<script type="text/javascript" src="/assets/js/index.js"></script>
+</body>
+</html>
