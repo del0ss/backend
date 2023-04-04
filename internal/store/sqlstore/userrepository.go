@@ -14,11 +14,9 @@ func (r *UserRepository) CreateUser(u *model.User) error {
 	}
 
 	_, err := r.FindByLogin(u.Email)
-
 	if err == nil {
 		return err
 	}
-
 	return r.store.db.QueryRow(
 		"INSERT INTO users(login, email, password_hash) VALUES ($1, $2, $3) RETURNING id",
 		u.Login,
@@ -27,10 +25,12 @@ func (r *UserRepository) CreateUser(u *model.User) error {
 	).Scan(&u.ID)
 }
 
-func (r *UserRepository) FindByLogin(login string) (*model.User, error) {
-	u := &model.User{}
-	if err := r.store.db.QueryRow("SELECT id, login, password_hash FROM users WHERE login = $1", login).Scan(&u.ID, &u.Login, &u.PasswordHash); err != nil {
-		return nil, err
+func (r *UserRepository) FindByLogin(login string) (model.User, error) {
+	var u model.User
+	if err := r.store.db.QueryRow("SELECT id, login, password_hash, role_id FROM users WHERE login = $1", login).Scan(
+		&u.ID, &u.Login, &u.PasswordHash, &u.Role,
+	); err != nil {
+		return u, err
 	}
 	return u, nil
 }

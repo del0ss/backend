@@ -30,7 +30,6 @@ func (m *Manager) GenerateJWT(id int, role int) (string, error) {
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(5 * time.Minute).Unix(),
 			IssuedAt:  time.Now().Unix()}, id, role})
-
 	return token.SignedString([]byte(m.signingKey))
 }
 

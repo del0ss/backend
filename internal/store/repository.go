@@ -6,7 +6,7 @@ import (
 
 type UserRepository interface {
 	CreateUser(*model.User) error
-	FindByLogin(login string) (*model.User, error)
+	FindByLogin(login string) (model.User, error)
 	GetRole() (int, error)
 }
 

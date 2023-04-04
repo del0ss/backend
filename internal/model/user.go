@@ -3,17 +3,18 @@ package model
 import (
 	"errors"
 	"github.com/asaskevich/govalidator"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
-	ID           int    `json:"id" db:"id"`
+	ID           int    `json:"-" db:"id"`
 	Login        string `json:"login" binding:"required,min=4,max=15"`
 	Email        string `json:"email" binding:"required,email"`
-	Password     string `json:"password,omitempty" binding:"required,min=6,max=25"`
-	RePassword   string `json:"rePassword,omitempty" binding:"required,min=6,max=25"`
+	Password     string `json:"password,omitempty" binding:"required,min=5,max=25"`
+	RePassword   string `json:"rePassword,omitempty" binding:"required,min=5,max=25"`
 	PasswordHash string `json:"-"`
-	Role         int    `json:"role"`
+	Role         int    `json:"-"`
 	AccessToken  string `json:"-"`
 	RefreshToken string `json:"-"`
 }
@@ -44,6 +45,7 @@ func (u *User) Sanitize() {
 func (u *User) CheckUserPassword(password string) error {
 	err := bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(password))
 	if err != nil {
+		logrus.Error(err)
 		return err
 	}
 	return nil

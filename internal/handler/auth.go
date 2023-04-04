@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -73,17 +74,28 @@ func (h *Handler) handlerRegisterUser() gin.HandlerFunc {
 	}
 }
 
+type signInInput struct {
+	Login    string `json:"login" binding:"required,min=4,max=15"`
+	Password string `json:"password,omitempty" binding:"required,min=5,max=25"`
+}
+
 func (h *Handler) handlerLoginUser() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
-		var u model.User
-		if err := c.BindJSON(&u); err != nil {
+		var signInInput signInInput
+		if err := c.BindJSON(&signInInput); err != nil {
 			logrus.Error(err)
 			newErrorMessage(c, http.StatusBadRequest, err.Error())
 			return
 		}
-
-		if u.CheckUserPassword(c.PostForm("password")) != nil {
+		u, err := h.store.User().FindByLogin(signInInput.Login)
+		if err != nil {
+			logrus.Error(err)
+			newErrorMessage(c, http.StatusInternalServerError, err.Error())
+			return
+		}
+		if u.CheckUserPassword(signInInput.Password) != nil {
+			logrus.Error(errors.New("password do not match"))
 			c.JSON(http.StatusOK, gin.H{
 				"Error":   "Validation password",
 				"Message": "Password do not match",
