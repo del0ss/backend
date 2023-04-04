@@ -11,6 +11,7 @@ type User struct {
 	Login        string `json:"login" binding:"required,min=4,max=15"`
 	Email        string `json:"email" binding:"required,email"`
 	Password     string `json:"password,omitempty" binding:"required,min=6,max=25"`
+	RePassword   string `json:"rePassword,omitempty" binding:"required,min=6,max=25"`
 	PasswordHash string `json:"-"`
 	Role         int    `json:"role"`
 	AccessToken  string `json:"-"`
@@ -37,6 +38,7 @@ func (u *User) BeforeCreate() error {
 
 func (u *User) Sanitize() {
 	u.Password = ""
+	u.RePassword = ""
 }
 
 func (u *User) CheckUserPassword(password string) error {

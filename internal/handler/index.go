@@ -13,12 +13,10 @@ func (h *Handler) helloPage() gin.HandlerFunc {
 		if err != nil {
 			isAuth = false
 		}
-
-		c.HTML(http.StatusOK, "index.html", gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"Title":          "Home",
 			"isAuthenticate": isAuth,
 		})
-
 	}
 
 }
@@ -27,7 +25,7 @@ func (h *Handler) handlePe() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 
-		c.HTML(http.StatusOK, "zxc.html", gin.H{})
+		c.JSON(http.StatusOK, gin.H{})
 	}
 
 }

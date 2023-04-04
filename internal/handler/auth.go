@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"net/http"
 	"smth/internal/model"
 )
@@ -14,7 +15,7 @@ const (
 func (h *Handler) singUpPage() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
-		c.HTML(http.StatusOK, "singup.html", gin.H{})
+		c.JSON(http.StatusOK, gin.H{})
 	}
 
 }
@@ -22,7 +23,7 @@ func (h *Handler) singUpPage() gin.HandlerFunc {
 func (h *Handler) singInPage() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
-		c.HTML(200, "singin.html", gin.H{})
+		c.JSON(http.StatusOK, gin.H{})
 	}
 
 }
@@ -30,30 +31,21 @@ func (h *Handler) singInPage() gin.HandlerFunc {
 func (h *Handler) handlerRegisterUser() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
-		password := c.PostForm("password")
-		rePassword := c.PostForm("rePassword")
-		if password != rePassword {
-			c.Redirect(http.StatusMovedPermanently, defaultRedirectURL)
+		var u = model.User{Role: 0}
+		if err := c.BindJSON(&u); err != nil {
+			logrus.Error(err)
+			newErrorMessage(c, http.StatusBadRequest, err.Error())
+			return
+		}
+		if u.Password != u.RePassword {
 			c.JSON(http.StatusOK, gin.H{
-				"Error": "Passwords do not match",
+				"Error":   "Validation password",
+				"Message": "Passwords do not match",
 			})
 			return
 		}
-		role, err := h.store.User().GetRole()
-		if err != nil {
-			c.AbortWithError(http.StatusInternalServerError, err)
-			return
-		}
-
-		u := model.User{
-			Login:    c.PostForm("login"),
-			Email:    c.PostForm("email"),
-			Password: password,
-			Role:     role,
-		}
 
 		if err := u.Validate(); err != true {
-			c.Redirect(http.StatusMovedPermanently, defaultRedirectURL)
 			c.JSON(http.StatusOK, gin.H{
 				"Error":   "Validation error",
 				"Message": "Invalid email or password",
@@ -62,23 +54,21 @@ func (h *Handler) handlerRegisterUser() gin.HandlerFunc {
 		}
 
 		if err := h.store.User().CreateUser(&u); err != nil {
-			c.AbortWithError(http.StatusInternalServerError, err)
+			newErrorMessage(c, http.StatusInternalServerError, err.Error())
 			return
 		}
 
 		u.Sanitize()
+
 		token, err := h.tokenManager.GenerateJWT(u.ID, u.Role)
 		if err != nil {
-			c.AbortWithError(http.StatusInternalServerError, err)
+			newErrorMessage(c, http.StatusInternalServerError, err.Error())
 			return
 		}
-		c.SetCookie("auth-token", token, maxAgeCookie, "/", "localhost", false, true)
 
-		if _, err = h.tokenManager.RefreshJWT(); err != nil {
-			c.AbortWithError(http.StatusInternalServerError, err)
-			return
-		}
-		c.Redirect(http.StatusMovedPermanently, "/")
+		c.JSON(http.StatusOK, gin.H{
+			"accessToken": token,
+		})
 
 	}
 }
@@ -86,13 +76,17 @@ func (h *Handler) handlerRegisterUser() gin.HandlerFunc {
 func (h *Handler) handlerLoginUser() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
-		u, err := h.store.User().FindByLogin(c.PostForm("login"))
+		var u model.User
+		if err := c.BindJSON(&u); err != nil {
+			logrus.Error(err)
+			newErrorMessage(c, http.StatusBadRequest, err.Error())
+			return
+		}
 
-		if err != nil || u.CheckUserPassword(c.PostForm("password")) != nil {
-			c.Redirect(http.StatusMovedPermanently, defaultRedirectURL)
+		if u.CheckUserPassword(c.PostForm("password")) != nil {
 			c.JSON(http.StatusOK, gin.H{
-				"Error":   "Validation error",
-				"Message": "Invalid password",
+				"Error":   "Validation password",
+				"Message": "Password do not match",
 			})
 			return
 		}
@@ -100,14 +94,12 @@ func (h *Handler) handlerLoginUser() gin.HandlerFunc {
 		token, err := h.tokenManager.GenerateJWT(u.ID, u.Role)
 
 		if err != nil {
-			c.AbortWithError(http.StatusInternalServerError, err)
+			newErrorMessage(c, http.StatusInternalServerError, err.Error())
 			return
 		}
 
-		c.SetCookie("auth-token", "Bearer "+token, maxAgeCookie, "/", "localhost", false, true)
-
-		c.Redirect(http.StatusMovedPermanently, "/")
-
+		c.JSON(http.StatusOK, gin.H{
+			"accessToken": token,
+		})
 	}
-
 }
