@@ -40,16 +40,14 @@ func (h *Handler) handlerRegisterUser() gin.HandlerFunc {
 		}
 		if u.Password != u.RePassword {
 			c.JSON(http.StatusOK, gin.H{
-				"Error":   "Validation password",
-				"Message": "Passwords do not match",
+				"errorResponse": "Passwords do not match",
 			})
 			return
 		}
 
 		if err := u.Validate(); err != true {
 			c.JSON(http.StatusOK, gin.H{
-				"Error":   "Validation error",
-				"Message": "Invalid email or password",
+				"errorResponse": "Invalid email or password",
 			})
 			return
 		}
@@ -94,18 +92,18 @@ func (h *Handler) handlerLoginUser() gin.HandlerFunc {
 			newErrorMessage(c, http.StatusInternalServerError, err.Error())
 			return
 		}
+
 		if u.CheckUserPassword(signInInput.Password) != nil {
 			logrus.Error(errors.New("password do not match"))
 			c.JSON(http.StatusOK, gin.H{
-				"Error":   "Validation password",
-				"Message": "Password do not match",
+				"errorResponse": "Password do not match",
 			})
 			return
 		}
 
 		token, err := h.tokenManager.GenerateJWT(u.ID, u.Role)
-
 		if err != nil {
+			logrus.Error(err)
 			newErrorMessage(c, http.StatusInternalServerError, err.Error())
 			return
 		}

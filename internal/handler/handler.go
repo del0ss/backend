@@ -10,20 +10,22 @@ import (
 type Handler struct {
 	store        store.Store
 	tokenManager auth.TokenManager
+	cors         gin.HandlerFunc
 }
 
-func New(store *sqlstore.Store, tokenManager auth.TokenManager) *Handler {
+func New(store *sqlstore.Store, tokenManager auth.TokenManager, cors gin.HandlerFunc) *Handler {
 	return &Handler{
 		store:        store,
 		tokenManager: tokenManager,
+		cors:         cors,
 	}
 }
 
 func (h *Handler) ConfigureRouter() *gin.Engine {
 	router := gin.Default()
-	router.LoadHTMLGlob("templates/*.html")
-	router.Static("/assets", "./assets")
-
+	//router.LoadHTMLGlob("templates/*.html")
+	//router.Static("/assets", "./assets")
+	router.Use(h.cors)
 	router.GET("/", h.helloPage())
 	router.GET("/sing-up", h.singUpPage())
 	router.GET("/sing-in", h.singInPage())

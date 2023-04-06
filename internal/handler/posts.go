@@ -9,22 +9,18 @@ import (
 )
 
 func (h *Handler) GetPosts() gin.HandlerFunc {
-	// СЕЛЕКТ ЗАПРОС ВСЕХ ПОСТОВ И ВЕРНУТЬ ИХ В ЗАГОЛОВКЕ ХТМЛ
 	return func(c *gin.Context) {
-		p, err := h.store.Post().GetPosts()
-		if err != nil {
-			c.HTML(http.StatusInternalServerError, "posts.html", gin.H{
-				"Title":          "Home",
-				"isAuthenticate": true,
-				"Posts":          false,
-			})
+		_, ok := c.Get(userContext)
+		if ok == false {
+			newErrorMessage(c, http.StatusUnauthorized, "invalid header")
 			return
 		}
-		c.HTML(http.StatusOK, "posts.html", gin.H{
-			"Title":          "Home",
-			"isAuthenticate": true,
-			"Posts":          p,
-		})
+		p, err := h.store.Post().GetPosts()
+		if err != nil {
+			newErrorMessage(c, http.StatusInternalServerError, err.Error())
+			return
+		}
+		c.JSON(http.StatusOK, p)
 	}
 }
 
@@ -36,7 +32,6 @@ func (h *Handler) CreatePosts() gin.HandlerFunc {
 }
 
 func (h *Handler) GetPost() gin.HandlerFunc {
-	// СЕЛЕКТ ЗАПРОС ОПРЕДЕЛЁННОГО ПОСТА И ВЕРНУТЬ ЕГО В ЗАГОЛОВКЕ ХТМЛ
 	return func(c *gin.Context) {
 		id, _ := strconv.Atoi(c.Param("id"))
 		fmt.Println(id)
@@ -58,7 +53,7 @@ func (h *Handler) HandlerCreatePost() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		post := model.Post{Title: c.PostForm("title"), Content: c.PostForm("content")}
-		userId, _ := h.parseAuthCookie(c)
+		userId, _ := h.parseAuthHeader(c)
 		err := h.store.Post().CreatePost(&post, userId)
 
 		if err != nil {

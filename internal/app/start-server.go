@@ -2,6 +2,8 @@ package app
 
 import (
 	"database/sql"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"smth/cmd/config"
 	"smth/internal/handler"
@@ -19,7 +21,8 @@ func Start(config *config.Config) error {
 
 	store := sqlstore.New(db)
 	manager := auth.NewManager(config.App.SecretKey)
-	handlers := handler.New(store, manager)
+	corsSettings := CorsSettings()
+	handlers := handler.New(store, manager, corsSettings)
 	srv := newServer(handlers.ConfigureRouter())
 
 	s := &http.Server{
@@ -45,4 +48,20 @@ func newDB(databaseName, databaseURL string) (*sql.DB, error) {
 	}
 
 	return db, nil
+}
+
+func CorsSettings() gin.HandlerFunc {
+	c := cors.New(cors.Config{
+		AllowOrigins: []string{"http://localhost:3000"},
+		AllowMethods: []string{
+			http.MethodGet,
+			http.MethodPost,
+		},
+		AllowHeaders: []string{"Origin", "Content-Type"},
+		ExposeHeaders: []string{
+			"Content-Length",
+		},
+		AllowCredentials: true,
+	})
+	return c
 }

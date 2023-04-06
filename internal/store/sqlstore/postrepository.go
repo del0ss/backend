@@ -20,7 +20,7 @@ func (r *PostRepository) CreatePost(p *model.Post, userId interface{}) error {
 func (r *PostRepository) GetPosts() ([]model.Post, error) {
 	p := &model.Post{}
 	var data []model.Post
-	rows, err := r.store.db.Query("SELECT id, title, content FROM posts ORDER BY id DESC")
+	rows, err := r.store.db.Query("SELECT * FROM posts ORDER BY id DESC")
 	if err != nil {
 		return nil, err
 	}
@@ -29,6 +29,7 @@ func (r *PostRepository) GetPosts() ([]model.Post, error) {
 	for rows.Next() {
 		err = rows.Scan(
 			&p.ID,
+			&p.UserID,
 			&p.Title,
 			&p.Content,
 		)

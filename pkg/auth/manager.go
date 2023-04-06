@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+const timeAlive = 30
+
 type Manager struct {
 	signingKey string
 }
@@ -28,7 +30,7 @@ type tokenClaims struct {
 func (m *Manager) GenerateJWT(id int, role int) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(5 * time.Minute).Unix(),
+			ExpiresAt: time.Now().Add(timeAlive * time.Minute).Unix(),
 			IssuedAt:  time.Now().Unix()}, id, role})
 	return token.SignedString([]byte(m.signingKey))
 }

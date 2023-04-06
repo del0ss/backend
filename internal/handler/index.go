@@ -6,16 +6,15 @@ import (
 )
 
 func (h *Handler) helloPage() gin.HandlerFunc {
-	isAuth := true
 
 	return func(c *gin.Context) {
-		_, err := c.Cookie("auth-token")
-		if err != nil {
-			isAuth = false
+		header := c.GetHeader("Authorization")
+		p, _ := h.store.Post().GetPosts()
+		if header == "" {
+
 		}
 		c.JSON(http.StatusOK, gin.H{
-			"Title":          "Home",
-			"isAuthenticate": isAuth,
+			"Posts": p,
 		})
 	}
 
