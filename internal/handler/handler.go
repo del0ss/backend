@@ -23,8 +23,6 @@ func New(store *sqlstore.Store, tokenManager auth.TokenManager, cors gin.Handler
 
 func (h *Handler) ConfigureRouter() *gin.Engine {
 	router := gin.Default()
-	//router.LoadHTMLGlob("templates/*.html")
-	//router.Static("/assets", "./assets")
 	router.Use(h.cors)
 	router.GET("/", h.helloPage())
 	router.GET("/sing-up", h.singUpPage())

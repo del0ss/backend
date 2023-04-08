@@ -16,6 +16,7 @@ func (h *Handler) GetPosts() gin.HandlerFunc {
 			return
 		}
 		p, err := h.store.Post().GetPosts()
+		fmt.Println(p)
 		if err != nil {
 			newErrorMessage(c, http.StatusInternalServerError, err.Error())
 			return
@@ -25,40 +26,43 @@ func (h *Handler) GetPosts() gin.HandlerFunc {
 }
 
 func (h *Handler) CreatePosts() gin.HandlerFunc {
-
 	return func(c *gin.Context) {
-		c.HTML(http.StatusOK, "create_post.html", gin.H{})
+		c.JSON(http.StatusOK, gin.H{})
 	}
 }
 
 func (h *Handler) GetPost() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, _ := strconv.Atoi(c.Param("id"))
-		fmt.Println(id)
 		p, err := h.store.Post().GetPost(id)
-		fmt.Println(err)
 		if err != nil {
-			c.HTML(http.StatusOK, "error.html", gin.H{})
+			newErrorMessage(c, http.StatusInternalServerError, err.Error())
+			return
 		}
-		c.HTML(http.StatusOK, "post.html", gin.H{
-			"Title":          "Post",
-			"isAuthenticate": true,
-			"Post":           p,
-		})
-
+		c.JSON(http.StatusOK, p)
 	}
 }
 
 func (h *Handler) HandlerCreatePost() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
-		post := model.Post{Title: c.PostForm("title"), Content: c.PostForm("content")}
-		userId, _ := h.parseAuthHeader(c)
-		err := h.store.Post().CreatePost(&post, userId)
-
-		if err != nil {
+		var p model.Post
+		if err := c.BindJSON(&p); err != nil {
+			newErrorMessage(c, http.StatusUnauthorized, err.Error())
 			return
 		}
-		c.Redirect(http.StatusMovedPermanently, "/posts")
+
+		userId, err := h.parseAuthHeader(c)
+		if err != nil {
+			newErrorMessage(c, http.StatusUnauthorized, err.Error())
+			return
+		}
+
+		if err := h.store.Post().CreatePost(&p, userId); err != nil {
+			newErrorMessage(c, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{})
 	}
 }
