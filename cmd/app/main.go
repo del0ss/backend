@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/joho/godotenv"
 	"log"
-	"smth/cmd/config"
+	"smth/config"
 	"smth/internal/app"
 )
 

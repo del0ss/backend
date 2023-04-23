@@ -13,9 +13,7 @@ func (h *Handler) helloPage() gin.HandlerFunc {
 		if header == "" {
 
 		}
-		c.JSON(http.StatusOK, gin.H{
-			"Posts": p,
-		})
+		c.JSON(http.StatusOK, p)
 	}
 
 }

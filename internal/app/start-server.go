@@ -5,7 +5,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"smth/cmd/config"
+	"smth/config"
 	"smth/internal/handler"
 	"smth/internal/store/sqlstore"
 	"smth/pkg/auth"
