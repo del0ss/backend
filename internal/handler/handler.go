@@ -25,10 +25,8 @@ func (h *Handler) ConfigureRouter() *gin.Engine {
 	router := gin.Default()
 	router.Use(h.cors)
 	router.GET("/", h.helloPage())
-	router.GET("/sing-up", h.singUpPage())
-	router.GET("/sing-in", h.singInPage())
-	router.POST("/sing-up", h.handlerRegisterUser())
-	router.POST("/sing-in", h.handlerLoginUser())
+	router.POST("/sing-up", h.registerUser())
+	router.POST("/sing-in", h.loginUser())
 
 	authGroup := router.Group("/auth", h.userIdentity)
 	{
@@ -36,10 +34,9 @@ func (h *Handler) ConfigureRouter() *gin.Engine {
 	}
 	postsGroup := router.Group("/posts")
 	{
-		postsGroup.GET("/", h.GetPosts())
-		postsGroup.GET("/create", h.CreatePosts())
-		postsGroup.POST("/create", h.HandlerCreatePost())
-		postsGroup.GET("/:id", h.GetPost())
+		postsGroup.GET("/", h.getPosts())
+		postsGroup.POST("/create", h.handlerCreatePost())
+		postsGroup.GET("/:id", h.getPost())
 		postsGroup.DELETE("/:id", h.DeletePost())
 	}
 	return router

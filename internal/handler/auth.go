@@ -13,23 +13,7 @@ const (
 	maxAgeCookie       = 300
 )
 
-func (h *Handler) singUpPage() gin.HandlerFunc {
-
-	return func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{})
-	}
-
-}
-
-func (h *Handler) singInPage() gin.HandlerFunc {
-
-	return func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{})
-	}
-
-}
-
-func (h *Handler) handlerRegisterUser() gin.HandlerFunc {
+func (h *Handler) registerUser() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		var u = model.User{Role: 0}
@@ -77,7 +61,7 @@ type signInInput struct {
 	Password string `json:"password,omitempty" binding:"required,min=5,max=25"`
 }
 
-func (h *Handler) handlerLoginUser() gin.HandlerFunc {
+func (h *Handler) loginUser() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		var signInInput signInInput

@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func (h *Handler) GetPosts() gin.HandlerFunc {
+func (h *Handler) getPosts() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		_, ok := c.Get(userContext)
 		if ok == false {
@@ -24,13 +24,7 @@ func (h *Handler) GetPosts() gin.HandlerFunc {
 	}
 }
 
-func (h *Handler) CreatePosts() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{})
-	}
-}
-
-func (h *Handler) GetPost() gin.HandlerFunc {
+func (h *Handler) getPost() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, _ := strconv.Atoi(c.Param("id"))
 		p, err := h.store.Post().GetPost(id)
@@ -55,7 +49,7 @@ func (h *Handler) DeletePost() gin.HandlerFunc {
 	}
 }
 
-func (h *Handler) HandlerCreatePost() gin.HandlerFunc {
+func (h *Handler) handlerCreatePost() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		var p model.Post
@@ -64,11 +58,11 @@ func (h *Handler) HandlerCreatePost() gin.HandlerFunc {
 			return
 		}
 
-		//userId, err := h.parseAuthHeader(c)
-		//if err != nil {
-		//	newErrorMessage(c, http.StatusUnauthorized, err.Error())
-		//	return
-		//}
+		_, ok := c.Get(userContext)
+		if ok == false {
+			newErrorMessage(c, http.StatusUnauthorized, "invalid header")
+			return
+		}
 
 		id, err := h.store.Post().CreatePost(p, 1)
 		if err != nil {
