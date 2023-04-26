@@ -8,13 +8,14 @@ type PostRepository struct {
 	store *Store
 }
 
-func (r *PostRepository) CreatePost(p *model.Post, userId interface{}) error {
-	return r.store.db.QueryRow(
-		"INSERT INTO posts(user_id, title, content) VALUES ($1, $2, $3) RETURNING id",
-		userId,
-		p.Title,
-		p.Content,
-	).Scan(&p.ID)
+func (r *PostRepository) CreatePost(p model.Post, userId interface{}) (int, error) {
+	var postID int
+	row := r.store.db.QueryRow("INSERT INTO posts(user_id, title, content) VALUES ($1, $2, $3) RETURNING id", userId, p.Title, p.Content)
+	err := row.Scan(&postID)
+	if err != nil {
+		return 0, err
+	}
+	return postID, nil
 }
 
 func (r *PostRepository) GetPosts() ([]model.Post, error) {
@@ -54,4 +55,8 @@ func (r *PostRepository) GetPost(id int) (*model.Post, error) {
 	}
 	return p, nil
 
+}
+func (r *PostRepository) DeletePost(id int) error {
+	_, err := r.store.db.Exec("DELETE FROM posts WHERE id = $1", id)
+	return err
 }

@@ -34,13 +34,13 @@ func (h *Handler) ConfigureRouter() *gin.Engine {
 	{
 		authGroup.GET("/pepepe", h.handlePe())
 	}
-	postsGroup := router.Group("/posts", h.userIdentity)
+	postsGroup := router.Group("/posts")
 	{
 		postsGroup.GET("/", h.GetPosts())
 		postsGroup.GET("/create", h.CreatePosts())
 		postsGroup.POST("/create", h.HandlerCreatePost())
 		postsGroup.GET("/:id", h.GetPost())
-		postsGroup.DELETE("/:id")
+		postsGroup.DELETE("/:id", h.DeletePost())
 	}
 	return router
 }

@@ -11,7 +11,8 @@ type UserRepository interface {
 }
 
 type PostRepository interface {
-	CreatePost(post *model.Post, userId interface{}) error
+	CreatePost(post model.Post, userId interface{}) (int, error)
 	GetPosts() ([]model.Post, error)
 	GetPost(id int) (*model.Post, error)
+	DeletePost(id int) error
 }
