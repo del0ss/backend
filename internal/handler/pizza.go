@@ -8,14 +8,14 @@ import (
 	"strconv"
 )
 
-func (h *Handler) getPosts() gin.HandlerFunc {
+func (h *Handler) getPizzas() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//_, ok := c.Get(userContext)
 		//if ok == false {
 		//	newErrorMessage(c, http.StatusUnauthorized, "invalid header")
 		//	return
 		//}
-		p, err := h.store.Post().GetPosts()
+		p, err := h.store.Pizza().GetPizzas()
 		if err != nil {
 			newErrorMessage(c, http.StatusInternalServerError, err.Error())
 			return
@@ -24,10 +24,10 @@ func (h *Handler) getPosts() gin.HandlerFunc {
 	}
 }
 
-func (h *Handler) getPost() gin.HandlerFunc {
+func (h *Handler) getPizza() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, _ := strconv.Atoi(c.Param("id"))
-		p, err := h.store.Post().GetPost(id)
+		p, err := h.store.Pizza().GetPizza(id)
 		if err != nil {
 			newErrorMessage(c, http.StatusInternalServerError, err.Error())
 			return
@@ -36,7 +36,7 @@ func (h *Handler) getPost() gin.HandlerFunc {
 	}
 }
 
-func (h *Handler) DeletePost() gin.HandlerFunc {
+func (h *Handler) DeletePizza() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, _ := strconv.Atoi(c.Param("id"))
 		err := h.store.Post().DeletePost(id)
@@ -49,10 +49,10 @@ func (h *Handler) DeletePost() gin.HandlerFunc {
 	}
 }
 
-func (h *Handler) createPost() gin.HandlerFunc {
+func (h *Handler) createPizza() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
-		var p model.Post
+		var p model.Pizza
 		if err := c.BindJSON(&p); err != nil {
 			newErrorMessage(c, http.StatusUnauthorized, err.Error())
 			return
@@ -64,7 +64,7 @@ func (h *Handler) createPost() gin.HandlerFunc {
 		//	return
 		//}
 
-		id, err := h.store.Post().CreatePost(p, 1)
+		id, err := h.store.Pizza().CreatePizza(p)
 		if err != nil {
 			logrus.Error(err)
 			newErrorMessage(c, http.StatusInternalServerError, err.Error())

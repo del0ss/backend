@@ -16,3 +16,10 @@ type PostRepository interface {
 	GetPost(id int) (*model.Post, error)
 	DeletePost(id int) error
 }
+
+type PizzaRepository interface {
+	CreatePizza(post model.Pizza) (int, error)
+	GetPizzas() ([]model.Pizza, error)
+	GetPizza(id int) (*model.Pizza, error)
+	DeletePizza(id int) error
+}

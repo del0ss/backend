@@ -24,7 +24,7 @@ func New(store *sqlstore.Store, tokenManager auth.TokenManager, cors gin.Handler
 func (h *Handler) ConfigureRouter() *gin.Engine {
 	router := gin.Default()
 	router.Use(h.cors)
-	router.GET("/", h.helloPage())
+
 	router.POST("/sing-up", h.registerUser())
 	router.POST("/sing-in", h.loginUser())
 
@@ -32,12 +32,21 @@ func (h *Handler) ConfigureRouter() *gin.Engine {
 	{
 		authGroup.GET("/pepepe", h.handlePe())
 	}
+
 	postsGroup := router.Group("/posts")
 	{
 		postsGroup.GET("/", h.getPosts())
-		postsGroup.POST("/create", h.handlerCreatePost())
+		postsGroup.POST("/create", h.createPost())
 		postsGroup.GET("/:id", h.getPost())
 		postsGroup.DELETE("/:id", h.DeletePost())
+	}
+
+	pizzaGroup := router.Group("/pizza")
+	{
+		pizzaGroup.GET("/", h.getPizzas())
+		pizzaGroup.GET("/:id", h.getPizza())
+		pizzaGroup.POST("/create", h.createPizza())
+		pizzaGroup.DELETE("/", h.DeletePizza())
 	}
 	return router
 }

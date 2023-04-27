@@ -7,9 +7,10 @@ import (
 )
 
 type Store struct {
-	db             *sql.DB
-	userRepository *UserRepository
-	postRepository *PostRepository
+	db              *sql.DB
+	userRepository  *UserRepository
+	postRepository  *PostRepository
+	pizzaRepository *PizzaRepository
 }
 
 func New(db *sql.DB) *Store {
@@ -36,4 +37,14 @@ func (s *Store) Post() store.PostRepository {
 		store: s,
 	}
 	return s.postRepository
+}
+
+func (s *Store) Pizza() store.PizzaRepository {
+	if s.pizzaRepository != nil {
+		return s.pizzaRepository
+	}
+	s.pizzaRepository = &PizzaRepository{
+		store: s,
+	}
+	return s.pizzaRepository
 }

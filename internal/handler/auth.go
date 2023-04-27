@@ -16,7 +16,7 @@ const (
 func (h *Handler) registerUser() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
-		var u = model.User{Role: 0}
+		var u = model.User{Role: 1}
 		if err := c.BindJSON(&u); err != nil {
 			logrus.Error(err)
 			newErrorMessage(c, http.StatusBadRequest, err.Error())
