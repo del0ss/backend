@@ -23,11 +23,11 @@ func NewManager(signingKey string) *Manager {
 
 type tokenClaims struct {
 	jwt.StandardClaims
-	UserId     int `json:"user_id"`
-	UserRoleId int `json:"user_role_id"`
+	UserId     int64 `json:"user_id"`
+	UserRoleId int64 `json:"user_role_id"`
 }
 
-func (m *Manager) GenerateJWT(id int, role int) (string, error) {
+func (m *Manager) GenerateJWT(id int64, role int64) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(timeAlive * time.Minute).Unix(),

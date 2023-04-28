@@ -8,13 +8,13 @@ import (
 )
 
 type User struct {
-	ID           int    `json:"-" db:"id"`
+	ID           int64  `json:"-" db:"id"`
 	Login        string `json:"login" binding:"required,min=4,max=15"`
 	Email        string `json:"email" binding:"required,email"`
 	Password     string `json:"password,omitempty" binding:"required,min=5,max=25"`
 	RePassword   string `json:"rePassword,omitempty" binding:"required,min=5,max=25"`
 	PasswordHash string `json:"-"`
-	Role         int    `json:"-"`
+	Role         int64  `json:"-"`
 	AccessToken  string `json:"-"`
 	RefreshToken string `json:"-"`
 }
