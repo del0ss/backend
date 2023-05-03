@@ -4,7 +4,7 @@ CREATE TABLE roles
     name varchar(255) not null unique
 );
 
-CREATE TABLE category
+CREATE TABLE category -- change to categories
 (
     id   serial       not null unique PRIMARY KEY,
     name varchar(255) not null unique

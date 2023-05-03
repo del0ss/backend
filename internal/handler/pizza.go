@@ -41,6 +41,18 @@ func (h *Handler) getCategories() gin.HandlerFunc {
 	}
 }
 
+func (h *Handler) getCategoryById() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id, _ := strconv.Atoi(c.Param("id"))
+		p, err := h.store.Pizza().GetCategoryById(id)
+		if err != nil {
+			newErrorMessage(c, http.StatusInternalServerError, err.Error())
+			return
+		}
+		c.JSON(http.StatusOK, p)
+	}
+}
+
 func (h *Handler) getPizzaById() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, _ := strconv.Atoi(c.Param("id"))

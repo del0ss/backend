@@ -10,3 +10,8 @@ type Pizza struct {
 	CategoryID int64   `json:"category_id" db:"category_id"`
 	Rating     int64   `json:"rating" db:"rating"`
 }
+
+type Category struct {
+	ID   int    `json:"id" db:"id"`
+	Name string `json:"name"`
+}

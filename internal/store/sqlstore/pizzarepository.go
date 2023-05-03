@@ -76,10 +76,10 @@ func (r *PizzaRepository) GetPizza(sort string) ([]model.Pizza, error) {
 	return data, nil
 }
 
-func (r *PizzaRepository) GetCategories() ([]model.Pizza, error) {
-	p := &model.Pizza{}
-	var data []model.Pizza
-	rows, err := r.store.db.Query("SELECT * FROM pizzas")
+func (r *PizzaRepository) GetCategories() ([]model.Category, error) {
+	p := &model.Category{}
+	var data []model.Category
+	rows, err := r.store.db.Query("SELECT * FROM category")
 	if err != nil {
 		return nil, err
 	}
@@ -88,13 +88,7 @@ func (r *PizzaRepository) GetCategories() ([]model.Pizza, error) {
 	for rows.Next() {
 		err = rows.Scan(
 			&p.ID,
-			&p.ImageURL,
 			&p.Name,
-			pq.Array(&p.Types),
-			pq.Array(&p.Sizes),
-			&p.Price,
-			&p.CategoryID,
-			&p.Rating,
 		)
 		if err != nil {
 			return nil, err
@@ -102,6 +96,18 @@ func (r *PizzaRepository) GetCategories() ([]model.Pizza, error) {
 		data = append(data, *p)
 	}
 	return data, nil
+}
+
+func (r *PizzaRepository) GetCategoryById(id int) (*model.Category, error) {
+	p := &model.Category{}
+	if err := r.store.db.QueryRow("SELECT * FROM category WHERE id = $1", id).Scan(
+		&p.ID,
+		&p.Name,
+	); err != nil {
+		return nil, err
+	}
+	return p, nil
+
 }
 
 func (r *PizzaRepository) GetPizzaById(id int) (*model.Pizza, error) {
