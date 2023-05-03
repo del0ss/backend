@@ -1,6 +1,7 @@
 package sqlstore
 
 import (
+	"fmt"
 	"github.com/lib/pq"
 	"smth/internal/model"
 )
@@ -40,7 +41,42 @@ func (r *PizzaRepository) CreatePizza(p model.Pizza) (int, error) {
 	return pizzaID, nil
 }
 
-func (r *PizzaRepository) GetPizzas() ([]model.Pizza, error) {
+func (r *PizzaRepository) GetPizza(sort string) ([]model.Pizza, error) {
+	p := &model.Pizza{}
+	var data []model.Pizza
+	var query string
+	if sort != "" {
+		query = fmt.Sprintf("SELECT * FROM pizzas ORDER BY %s", sort)
+	} else {
+		query = fmt.Sprintf("SELECT * FROM pizzas")
+	}
+	rows, err := r.store.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+
+		err = rows.Scan(
+			&p.ID,
+			&p.ImageURL,
+			&p.Name,
+			pq.Array(&p.Types),
+			pq.Array(&p.Sizes),
+			&p.Price,
+			&p.CategoryID,
+			&p.Rating,
+		)
+		if err != nil {
+			return nil, err
+		}
+		data = append(data, *p)
+	}
+	return data, nil
+}
+
+func (r *PizzaRepository) GetCategories() ([]model.Pizza, error) {
 	p := &model.Pizza{}
 	var data []model.Pizza
 	rows, err := r.store.db.Query("SELECT * FROM pizzas")
@@ -68,7 +104,7 @@ func (r *PizzaRepository) GetPizzas() ([]model.Pizza, error) {
 	return data, nil
 }
 
-func (r *PizzaRepository) GetPizza(id int) (*model.Pizza, error) {
+func (r *PizzaRepository) GetPizzaById(id int) (*model.Pizza, error) {
 	p := &model.Pizza{}
 
 	if err := r.store.db.QueryRow("SELECT * FROM pizzas WHERE id = $1", id).Scan(
