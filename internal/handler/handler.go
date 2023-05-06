@@ -48,7 +48,7 @@ func (h *Handler) ConfigureRouter() *gin.Engine {
 		pizzaGroup.GET("/categories/:id", h.getCategoryById())
 		pizzaGroup.GET("/:id", h.getPizzaById())
 		pizzaGroup.POST("/create", h.createPizza())
-		pizzaGroup.DELETE("/", h.DeletePizza())
+		pizzaGroup.DELETE("/", h.deletePizza())
 	}
 	return router
 }

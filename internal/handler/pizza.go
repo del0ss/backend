@@ -65,7 +65,7 @@ func (h *Handler) getPizzaById() gin.HandlerFunc {
 	}
 }
 
-func (h *Handler) DeletePizza() gin.HandlerFunc {
+func (h *Handler) deletePizza() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, _ := strconv.Atoi(c.Param("id"))
 		err := h.store.Post().DeletePost(id)

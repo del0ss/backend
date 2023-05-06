@@ -65,6 +65,8 @@ github.com/rogpeppe/go-internal v1.8.0 h1:FCbCCtXNOY3UtUuHUYaghJg4y7Fd14rXifAYUA
 github.com/rogpeppe/go-internal v1.8.0/go.mod h1:WmiCO8CzOY8rg0OYDC4/i/2WRWAB6poM+XZ2dLUbcbE=
 github.com/rs/cors v1.8.1 h1:OrP+y5H+5Md29ACTA9imbALaKHwOSUZkcizaG0LT5ow=
 github.com/rs/cors v1.8.1/go.mod h1:XyqrcTp5zjWr1wsJ8PIRZssZ8b/WMcMf71DJnit4EMU=
+github.com/rs/cors v1.9.0 h1:l9HGsTsHJcvW14Nk7J9KFz8bzeAWXn3CG6bgt7LsrAE=
+github.com/rs/cors v1.9.0/go.mod h1:XyqrcTp5zjWr1wsJ8PIRZssZ8b/WMcMf71DJnit4EMU=
 github.com/rs/cors/wrapper/gin v0.0.0-20230301160956-5c2b877d2a03 h1:nsd++DuCa48h18M0cIcBVk9T+2Q8aGr6/p7NUULeXaU=
 github.com/rs/cors/wrapper/gin v0.0.0-20230301160956-5c2b877d2a03/go.mod h1:gmu40DuK3SLdKUzGOUofS3UDZwyeOUy6ZjPPuaALatw=
 github.com/sirupsen/logrus v1.9.0 h1:trlNQbNUG3OdDrDil03MCb1H2o9nJ1x4/5LYw7byDE0=
