@@ -44,6 +44,7 @@ func (h *Handler) ConfigureRouter() *gin.Engine {
 	pizzaGroup := router.Group("/pizza")
 	{
 		pizzaGroup.GET("/", h.getPizza())
+		pizzaGroup.GET("/pages", h.getCountPage())
 		pizzaGroup.GET("/categories", h.getCategories())
 		pizzaGroup.GET("/categories/:id", h.getCategoryById())
 		pizzaGroup.GET("/:id", h.getPizzaById())

@@ -103,3 +103,13 @@ func (h *Handler) createPizza() gin.HandlerFunc {
 		c.JSON(http.StatusOK, id)
 	}
 }
+func (h *Handler) getCountPage() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		p, err := h.store.Pizza().GetCountPage()
+		if err != nil {
+			newErrorMessage(c, http.StatusInternalServerError, err.Error())
+			return
+		}
+		c.JSON(http.StatusOK, p)
+	}
+}

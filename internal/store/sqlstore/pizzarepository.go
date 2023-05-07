@@ -130,3 +130,14 @@ func (r *PizzaRepository) DeletePizza(id int) error {
 	_, err := r.store.db.Exec("DELETE FROM pizzas WHERE id = $1", id)
 	return err
 }
+
+func (r *PizzaRepository) GetCountPage() (int, error) {
+	var pageCount int
+	var query string
+	query = fmt.Sprintf("SELECT COUNT(id) FROM pizzas")
+	err := r.store.db.QueryRow(query).Scan(&pageCount)
+	if err != nil {
+		return 0, err
+	}
+	return pageCount, nil
+}
