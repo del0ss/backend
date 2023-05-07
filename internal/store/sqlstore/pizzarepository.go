@@ -6,6 +6,8 @@ import (
 	"smth/internal/model"
 )
 
+const limit = 5
+
 type PizzaRepository struct {
 	store *Store
 }
@@ -41,15 +43,11 @@ func (r *PizzaRepository) CreatePizza(p model.Pizza) (int, error) {
 	return pizzaID, nil
 }
 
-func (r *PizzaRepository) GetPizza(sort string) ([]model.Pizza, error) {
-	p := &model.Pizza{}
+func (r *PizzaRepository) GetPizza(page int) ([]model.Pizza, error) {
 	var data []model.Pizza
 	var query string
-	if sort != "" {
-		query = fmt.Sprintf("SELECT * FROM pizzas ORDER BY %s", sort)
-	} else {
-		query = fmt.Sprintf("SELECT * FROM pizzas")
-	}
+	p := &model.Pizza{}
+	query = fmt.Sprintf("SELECT * FROM pizzas WHERE id > %d LIMIT %d", page*limit-limit, limit)
 	rows, err := r.store.db.Query(query)
 	if err != nil {
 		return nil, err

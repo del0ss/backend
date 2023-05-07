@@ -10,18 +10,35 @@ import (
 
 func (h *Handler) getPizza() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		sort := c.Query("sort")
+		page, _ := strconv.Atoi(c.Query("page"))
 		//_, ok := c.Get(userContext)
 		//if ok == false {
 		//	newErrorMessage(c, http.StatusUnauthorized, "invalid header")
 		//	return
 		//}
-		p, err := h.store.Pizza().GetPizza(sort)
+		p, err := h.store.Pizza().GetPizza(page)
 		if err != nil {
 			newErrorMessage(c, http.StatusInternalServerError, err.Error())
 			return
 		}
 		c.JSON(http.StatusOK, p)
+	}
+}
+
+func (h *Handler) getPizzaPage() gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		//_, ok := c.Get(userContext)
+		//if ok == false {
+		//	newErrorMessage(c, http.StatusUnauthorized, "invalid header")
+		//	return
+		//}
+		//p, err := h.store.Pizza().GetPizzaPage(page)
+		//if err != nil {
+		//	newErrorMessage(c, http.StatusInternalServerError, err.Error())
+		//	return
+		//}
+		//c.JSON(http.StatusOK, p)
 	}
 }
 

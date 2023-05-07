@@ -21,7 +21,7 @@ type PizzaRepository interface {
 	CreatePizza(post model.Pizza) (int, error)
 	GetCategories() ([]model.Category, error)
 	GetCategoryById(id int) (*model.Category, error)
-	GetPizza(sort string) ([]model.Pizza, error)
+	GetPizza(page int) ([]model.Pizza, error)
 	GetPizzaById(id int) (*model.Pizza, error)
 	DeletePizza(id int) error
 }
