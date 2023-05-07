@@ -8,11 +8,6 @@ import (
 	"smth/internal/model"
 )
 
-const (
-	defaultRedirectURL = "/registration"
-	maxAgeCookie       = 300
-)
-
 func (h *Handler) registerUser() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
