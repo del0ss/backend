@@ -3,6 +3,7 @@ package sqlstore
 import (
 	"fmt"
 	"github.com/lib/pq"
+	"math"
 	"smth/internal/model"
 )
 
@@ -130,13 +131,14 @@ func (r *PizzaRepository) DeletePizza(id int) error {
 	return err
 }
 
-func (r *PizzaRepository) GetCountPage() (int, error) {
-	var pageCount int
+func (r *PizzaRepository) GetCountPage() (float64, error) {
+	var pageCount float64
 	var query string
 	query = fmt.Sprintf("SELECT COUNT(id) FROM pizzas")
 	err := r.store.db.QueryRow(query).Scan(&pageCount)
 	if err != nil {
 		return 0, err
 	}
+	pageCount = math.Ceil(pageCount / limit)
 	return pageCount, nil
 }

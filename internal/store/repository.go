@@ -24,5 +24,5 @@ type PizzaRepository interface {
 	GetPizza(page int) ([]model.Pizza, error)
 	GetPizzaById(id int) (*model.Pizza, error)
 	DeletePizza(id int) error
-	GetCountPage() (int, error)
+	GetCountPage() (float64, error)
 }
