@@ -110,13 +110,12 @@ func (r *PizzaRepository) GetCategoryById(id int) (*model.Category, error) {
 
 func (r *PizzaRepository) GetPizzaById(id int) (*model.Pizza, error) {
 	p := &model.Pizza{}
-
 	if err := r.store.db.QueryRow("SELECT * FROM pizzas WHERE id = $1", id).Scan(
 		&p.ID,
 		&p.ImageURL,
 		&p.Name,
-		&p.Types,
-		&p.Sizes,
+		pq.Array(&p.Types),
+		pq.Array(&p.Sizes),
 		&p.Price,
 		&p.CategoryID,
 		&p.Rating,
