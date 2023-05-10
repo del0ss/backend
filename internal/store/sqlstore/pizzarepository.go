@@ -44,11 +44,11 @@ func (r *PizzaRepository) CreatePizza(p model.Pizza) (int, error) {
 	return pizzaID, nil
 }
 
-func (r *PizzaRepository) GetPizza(page int) ([]model.Pizza, error) {
+func (r *PizzaRepository) GetPizza(sortType string, category, page int) ([]model.Pizza, error) {
 	var data []model.Pizza
 	var query string
 	p := &model.Pizza{}
-	query = fmt.Sprintf("SELECT * FROM pizzas WHERE id > %d LIMIT %d", page*limit-limit, limit)
+	query = fmt.Sprintf("SELECT * FROM pizzas WHERE id > %d ORDER BY %s,%d LIMIT %d ", page*limit-limit, sortType, category, limit)
 	rows, err := r.store.db.Query(query)
 	if err != nil {
 		return nil, err

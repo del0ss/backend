@@ -10,13 +10,15 @@ import (
 
 func (h *Handler) getPizza() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		sortType := c.Query("sortType")
 		page, _ := strconv.Atoi(c.Query("page"))
+		categoryID, _ := strconv.Atoi(c.Query("category"))
 		//_, ok := c.Get(userContext)
 		//if !ok  {
 		//	newErrorMessage(c, http.StatusUnauthorized, "invalid header")
 		//	return
 		//}
-		p, err := h.store.Pizza().GetPizza(page)
+		p, err := h.store.Pizza().GetPizza(sortType, categoryID, page)
 		if err != nil {
 			newErrorMessage(c, http.StatusInternalServerError, err.Error())
 			return
